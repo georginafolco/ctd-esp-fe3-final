@@ -1,20 +1,51 @@
-import React from "react";
+import React, { useState, useEffect } from "react";
+import { Link } from 'react-router-dom'
+import { useDentistState } from './utils/global.context'
 
 
-const Card = ({ name, username, id }) => {
+const Card = ({ id, name, username }) => {
 
-  const addFav = ()=>{
-    // Aqui iria la logica para agregar la Card en el localStorage
+  const { favState, favDispatch } = useDentistState();
+
+  const [ isFavorited, setIsFavorited ]  = useState(false);
+
+  const toggleFav = (e) => {
+    e.preventDefault();
+    if (isFavorited) {
+      favDispatch({ type: 'DELETE_FAV', payload: id })
+    } else {
+      favDispatch({ type: 'ADD_FAV', payload: {id, name, username} })
+    }
+
+    setIsFavorited(!isFavorited)
   }
 
+  const isDentistFavorited = favState.some(dentist => dentist.id === id);
+
+  useEffect(() => 
+    setIsFavorited(isDentistFavorited)
+    , [isDentistFavorited]);
+
+  
   return (
     <div className="card">
-        {/* En cada card deberan mostrar en name - username y el id */}
-
-        {/* No debes olvidar que la Card a su vez servira como Link hacia la pagina de detalle */}
-
-        {/* Ademas deberan integrar la logica para guardar cada Card en el localStorage */}
-        <button onClick={addFav} className="favButton">Add fav</button>
+      <div>
+        <Link style={{textDecoration: 'none'}} to={`/dentist/${id}`}>
+          <div>
+            <img src={`images/img${id}.png`} alt="dentist" />
+          </div>
+          <div className="card-data">
+            <p className="user">{username}</p>
+            <h5 className="name">{name}</h5>
+            <p className="info">more details</p>
+          </div>
+        </Link>
+        <div onClick={toggleFav} className="btn-fav"> {isFavorited ? 
+          <img className='heart' src='images/solidheart.png' alt='heart'></img> : 
+          <img className='heart' src='images/heart.png' alt='heart'></img> }
+        </div>
+        
+      </div>
     </div>
   );
 };

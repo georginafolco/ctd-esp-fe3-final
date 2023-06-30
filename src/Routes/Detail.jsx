@@ -1,17 +1,35 @@
-import React from 'react'
+import React, { useEffect } from 'react'
+import { useDentistState } from '../Components/utils/global.context'
+import { useParams, useNavigate  } from 'react-router-dom'
+import axios from 'axios';
 
-
-//Este componente debera ser estilado como "dark" o "light" dependiendo del theme del Context
 
 const Detail = () => {
- 
-  // Consumiendo el parametro dinamico de la URL deberan hacer un fetch a un user en especifico
 
+  const navigate = useNavigate()
+  
+  const { dentistState, dentistDispatch } = useDentistState()
+  const { id }= useParams()
+  const urlDentist = `https://jsonplaceholder.typicode.com/users/${id}`;
+  useEffect(() => {
+    axios(urlDentist)
+    .then(res => dentistDispatch({type: 'GET_DENTIST', payload: res.data}));
+  });
+
+  const { name, email, phone, website } = dentistState.dentist
+  
   return (
     <>
-      <h1>Detail Dentist id </h1>
-      {/* aqui deberan renderizar la informacion en detalle de un user en especifico */}
-      {/* Deberan mostrar el name - email - phone - website por cada user en especifico */}
+      <button className='btn-back' onClick={() => navigate(-1)}>
+        <img src='/images/back.png' alt="back" className='arrow' />
+      </button>
+
+      <div className='contact-card'>
+        <p>{name}</p>
+        <p>Email: {email}</p>
+        <p>Tel: {phone}</p>
+        <p>Web: {website}</p>
+      </div>
     </>
   )
 }

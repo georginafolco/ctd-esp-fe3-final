@@ -1,14 +1,31 @@
 import React from 'react'
-
-//Este componente debera ser estilado como "dark" o "light" dependiendo del theme del Context
+import { Link } from 'react-router-dom'
+import { useDentistState } from './utils/global.context'
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
+import { faCircleHalfStroke } from '@fortawesome/free-solid-svg-icons';
 
 const Navbar = () => {
 
+  const { themeDispatch } = useDentistState();
+
+  const toggleTheme = () => {
+    themeDispatch({ type: 'CHANGE_THEME' })
+  }
+
   return (
     <nav>
-      {/* Aqui deberan agregar los liks correspondientes a las rutas definidas */}
-      {/* Deberan implementar ademas la logica para cambiar de Theme con el button */}
-      <button>Change theme</button>
+        <img className='logo' src="images/logo.png" alt="logo" />
+        <img className='logo2' src="images/logo2.png" alt="logo" />
+      <div className='nav-container'>
+        <div className='nav-bar'>
+          <Link to="/home">Home</Link>
+          <Link to="/favs">Favs</Link>
+          <Link to="/contact">Contact</Link> 
+        </div>
+        <button className='btn-change-theme' onClick={toggleTheme}>
+          <FontAwesomeIcon icon={faCircleHalfStroke} className='icon-change-theme' />
+        </button>
+      </div>
     </nav>
   )
 }
